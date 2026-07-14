@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newsletter Testing Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="viewGate" class="view-gate">
+  <div class="view-gate-box">
+    <div class="brand" style="justify-content:center;margin-bottom:18px;">
+      <span class="brand-mark">NT</span>
+    </div>
+    <h3>Newsletter Testing Dashboard</h3>
+    <p>Enter the password to view this dashboard.</p>
+    <input id="viewGatePassword" type="password" placeholder="Password" autofocus>
+    <p id="viewGateError" class="modal-error" hidden>Wrong password.</p>
+    <button id="viewGateSubmit" class="btn-primary" style="width:100%;margin-top:8px;">View dashboard</button>
+  </div>
+</div>
+
+<div id="app" hidden>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="brand">
+        <span class="brand-mark">NT</span>
+        <span class="brand-name">Newsletter<br>Testing Lab</span>
+      </div>
+      <button id="lockBtn" class="lock-btn" title="Toggle edit mode">
+        <span id="lockIcon">🔒</span>
+        <span id="lockLabel">View only</span>
+      </button>
+    </div>
+
+    <nav class="nav-groups">
+      <div class="nav-group">
+        <div class="nav-group-head">
+          <span>Ongoing</span>
+          <span class="count" id="ongoingCount">0</span>
+        </div>
+        <ul id="ongoingList" class="campaign-list"></ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-head">
+          <span>Finished</span>
+          <span class="count" id="finishedCount">0</span>
+        </div>
+        <ul id="finishedList" class="campaign-list"></ul>
+      </div>
+    </nav>
+
+    <button id="addCampaignBtn" class="add-campaign-btn edit-only" hidden>
+      <span>+</span> New campaign
+    </button>
+
+    <div class="sidebar-foot">
+      <span id="connStatus" class="conn-status">connecting…</span>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN: HOME ===================== -->
+  <main id="homeView" class="view">
+    <header class="view-header">
+      <h1>Newsletter Testing Dashboard</h1>
+      <p class="subtitle">Every resend is a test, not a repeat. Pick a campaign to log results, or start a new one.</p>
+    </header>
+
+    <section class="home-empty" id="homeEmpty">
+      <p>No campaigns yet.</p>
+      <p class="hint">Unlock editing in the sidebar, then add your first campaign.</p>
+    </section>
+
+    <section class="home-grid" id="homeGrid" hidden></section>
+  </main>
+
+  <!-- ===================== MAIN: CAMPAIGN DETAIL ===================== -->
+  <main id="campaignView" class="view" hidden>
+    <button id="backBtn" class="back-btn">← All campaigns</button>
+
+    <section class="campaign-header">
+      <div class="campaign-header-top">
+        <input id="campName" class="campaign-title-input" placeholder="Campaign name" disabled>
+        <div class="status-toggle" id="statusToggle">
+          <button data-status="ongoing" class="status-pill">Ongoing</button>
+          <button data-status="finished" class="status-pill">Finished</button>
+        </div>
+      </div>
+
+      <div class="campaign-meta-grid">
+        <div class="meta-field">
+          <label>Category</label>
+          <input id="campCategory" list="categoryOptions" placeholder="e.g. Sleep tech" disabled>
+          <datalist id="categoryOptions"></datalist>
+        </div>
+        <div class="meta-field">
+          <label>Campaign link</label>
+          <div class="link-field">
+            <input id="campLink" placeholder="https://…" disabled>
+            <a id="campLinkOpen" href="#" target="_blank" rel="noopener" class="link-open">Open ↗</a>
+          </div>
+        </div>
+        <div class="meta-field">
+          <label>Package price</label>
+          <input id="campPrice" placeholder="$299" disabled>
+        </div>
+        <div class="meta-field">
+          <label>ROI</label>
+          <input id="campRoi" placeholder="e.g. 4.2x" disabled>
+        </div>
+      </div>
+    </section>
+
+    <section class="tests-section">
+      <div class="tests-head">
+        <h2>Sends &amp; tests</h2>
+        <button id="addTestBtn" class="add-test-btn edit-only" hidden>+ Add send</button>
+      </div>
+      <div class="tests-stats" id="testsStats"></div>
+      <div class="tests-table-wrap">
+        <table class="tests-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Sent date</th><th>Newsletter link</th><th>Pledges</th><th>Open rate</th><th>Click rate</th><th>Notes</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="testsRow"></tbody>
+        </table>
+      </div>
+      <p class="tests-empty" id="testsEmpty" hidden>No sends logged yet.</p>
+    </section>
+  </main>
+
+</div>
+
+<!-- ===================== NEW CAMPAIGN MODAL ===================== -->
+<div id="campaignModal" class="modal-backdrop" hidden>
+  <div class="modal">
+    <h3>New campaign</h3>
+    <label>Campaign name</label>
+    <input id="newCampName" placeholder="e.g. Sleepal">
+    <div class="modal-actions">
+      <button id="newCampCancel" class="btn-secondary">Cancel</button>
+      <button id="newCampSave" class="btn-primary">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== UNLOCK MODAL ===================== -->
+<div id="unlockModal" class="modal-backdrop" hidden>
+  <div class="modal">
+    <h3>Unlock editing</h3>
+    <label>Password</label>
+    <input id="unlockPassword" type="password" placeholder="••••••••">
+    <p id="unlockError" class="modal-error" hidden>Wrong password.</p>
+    <div class="modal-actions">
+      <button id="unlockCancel" class="btn-secondary">Cancel</button>
+      <button id="unlockSubmit" class="btn-primary">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== TEST NOTE (T) PANEL ===================== -->
+<div id="notePanel" class="modal-backdrop" hidden>
+  <div class="modal note-modal">
+    <div class="note-modal-head">
+      <h3>Send <span id="noteTestNumber"></span> — test notes</h3>
+      <button id="noteClose" class="icon-close">✕</button>
+    </div>
+    <label>What did you test, and what happened?</label>
+    <textarea id="noteText" rows="10" placeholder="e.g. Changed subject line from feature-led to curiosity-led. Sent to non-openers segment (1,240 contacts). Open rate up 6pts vs original send, but pledges flat — suggests the subject fixed visibility, not conversion. Next: test hero image instead." disabled></textarea>
+    <div class="modal-actions">
+      <button id="noteCancel" class="btn-secondary">Close</button>
+      <button id="noteSave" class="btn-primary edit-only" hidden>Save note</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="firebase-config.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

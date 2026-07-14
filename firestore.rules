@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // NOTE: This dashboard has no real user accounts — the "edit lock" in
+    // the app is a UI-level password check only (see firebase-config.js).
+    // Firestore itself has no way to verify that password, so these rules
+    // allow anyone with your config to read AND write. That's fine for an
+    // internal link shared with your team/manager, but do not use this
+    // project for anything sensitive. If you need real security later,
+    // add Firebase Authentication and tighten these rules to check
+    // request.auth.
+
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
