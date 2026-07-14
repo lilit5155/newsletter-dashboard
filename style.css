@@ -354,6 +354,7 @@ body{
   display:flex;align-items:center;justify-content:center;
   z-index:100;
 }
+.view-gate[hidden]{display:none;}
 .view-gate-box{
   background:var(--surface);border:1px solid var(--line);border-radius:20px;
   padding:36px 32px;width:360px;max-width:90vw;text-align:center;
